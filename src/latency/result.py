@@ -1,0 +1,1 @@
+# Result class. result object is one single instance of a test. Use __str__ method. (This is basically a mini container for one instance of a test, that we can then use as a data point.)

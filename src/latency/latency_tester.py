@@ -1,0 +1,1 @@
+# LatencyTester class. Should take a domain, send the requests, and measure the time. Repeat tests, etc. Uses result objects and basically will have an attribute that is a list of result objects. This object will get appended to CSV.

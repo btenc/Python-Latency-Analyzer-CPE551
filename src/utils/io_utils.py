@@ -1,0 +1,1 @@
+# handle appending to the cumulative CSV, create it if missing, and load data into pandas.

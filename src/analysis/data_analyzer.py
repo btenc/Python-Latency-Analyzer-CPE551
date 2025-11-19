@@ -1,0 +1,1 @@
+# DataAnalyzer class. Take in CSV from the data folder and then use pandas to do sstuff to it. 
