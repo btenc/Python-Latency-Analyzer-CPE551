@@ -2,7 +2,10 @@
 File: latency_tester.py
 Description: URL Latency testing class,
     Send assigned amount of requests to a designated URL.
-    Compute dictionary of statistics from instance of tests.
+    Compute dictionary of statistics from session of tests.
+    The test sessions are what is appended to the results csv file
+    to then show stats.
+
 Author: William TenCate
 Email: wtencate@stevens.edu
 Created: 12/01/25
@@ -28,6 +31,7 @@ class LatencyTester:
         """
         Run test suite according to parameters set in object's instance
             (attempts is the amount of times, url is the url being tested, etc)
+        This completes the "session" of tests.
         """
         attempt_number = 1
 
