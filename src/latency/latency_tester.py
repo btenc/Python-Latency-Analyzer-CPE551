@@ -56,9 +56,9 @@ class LatencyTester:
 
     def create_summary_row(self):
         """
-        Return dictionary summarizing the entire run of tests.
+        Return dictionary summarizing the entire testing session.
         Note: does not return individual tests, it's a summary of the
-            whole "set" of runs
+            whole "session" of "attempts"
         """
         # list comprehension requirement
         times = [r.elapsed_ms for r in self.results if r.ok]

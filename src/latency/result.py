@@ -1,7 +1,6 @@
 """
 File: result.py
-Description: Result class for an individual test (every "attempt")
-    in LatencyTester class.
+Description: Result class for an individual test (every "attempt") in a testing session inside of the LatencyTester class.
 Author: William TenCate
 Email: wtencate@stevens.edu
 Created: 12/01/25
