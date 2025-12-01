@@ -1,5 +1,13 @@
-# LatencyTester class. Should take a domain, send the requests, and measure the time. Repeat tests, etc. Uses result objects and basically will have an attribute that is a list of result objects. This object will get appended to CSV.
-
+"""
+File: latency_tester.py
+Description: URL Latency testing class,
+    Send assigned amount of requests to a designated URL.
+    Compute dictionary of statistics from instance of tests.
+Author: William TenCate
+Email: wtencate@stevens.edu
+Created: 12/01/25
+Last Edited: 12/01/25
+"""
 
 import requests
 import time
@@ -17,6 +25,10 @@ class LatencyTester:
         self.results = []  # will store Result objects
 
     def run_tests(self):
+        """
+        Run test suite according to parameters set in object's instance
+            (attempts is the amount of times, url is the url being tested, etc)
+        """
         attempt_number = 1
 
         while attempt_number <= self.attempts:
@@ -43,11 +55,13 @@ class LatencyTester:
             attempt_number = attempt_number + 1
 
     def create_summary_row(self):
-        times = []
-
-        for r in self.results:
-            if r.ok:
-                times.append(r.elapsed_ms)
+        """
+        Return dictionary summarizing the entire run of tests.
+        Note: does not return individual tests, it's a summary of the
+            whole "set" of runs
+        """
+        # list comprehension requirement
+        times = [r.elapsed_ms for r in self.results if r.ok]
 
         successes = len(times)
         failures = len(self.results) - successes

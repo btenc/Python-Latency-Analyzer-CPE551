@@ -1,4 +1,12 @@
-# Result class. result object is one single instance of a test. Use __str__ method. (This is basically a mini container for one instance of a test, that we can then use as a data point.)
+"""
+File: result.py
+Description: Result class for an individual test (every "attempt")
+    in LatencyTester class.
+Author: William TenCate
+Email: wtencate@stevens.edu
+Created: 12/01/25
+Last Edited: 12/01/25
+"""
 
 
 class Result:
@@ -9,7 +17,7 @@ class Result:
         self.status_code = status_code
         self.ok = ok
 
-    def __str__(self):
+    def __str__(self):  # str formatting for debug purposes
         if self.ok:
             return f"{self.url} attempt {self.attempt}: {self.elapsed_ms:.2f} ms (status {self.status_code})"
         else:
