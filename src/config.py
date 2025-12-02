@@ -1,1 +1,1 @@
-# config variables to set like how many times we run a test and stuff
+# config variables to set like how many times we run a test and stuff, will maybe end up unused.

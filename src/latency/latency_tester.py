@@ -19,12 +19,16 @@ from latency.result import Result
 
 
 class LatencyTester:
-    def __init__(self, url, attempts=5, timeout=5, label="Default"):
+    def __init__(
+        self, url="https://www.google.com", attempts=5, timeout=5, label="Default"
+    ):
         self.url = url
         self.attempts = attempts
         self.timeout = timeout
         self.label = label
-        self.run_started_at = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        self.run_started_at = datetime.datetime.now().strftime(
+            "%Y-%m-%d %H:%M:%S"
+        )  # need to format time since it's gibberish originally
         self.results = []  # will store Result objects
 
     def run_tests(self):
@@ -58,7 +62,7 @@ class LatencyTester:
             self.results.append(result)
             attempt_number = attempt_number + 1
 
-    def create_summary_row(self):
+    def create_session_row(self):
         """
         Return dictionary summarizing the entire testing session.
         Note: does not return individual tests, it's a summary of the
@@ -102,3 +106,24 @@ class LatencyTester:
         }
 
         return row
+
+    def __str__(self):
+        """
+        Return summary of the session in clean format
+        """
+        session = self.create_session_row()
+
+        text = (
+            f"Testing Session Complete...\n"
+            f"Run started at: {session['run_started_at']}\n"
+            f"Label: {session['label']}\n"
+            f"URL: {session['url']}\n"
+            f"Attempts: {session['attempts']}\n"
+            f"Successes: {session['successes']}\n"
+            f"Failures: {session['failures']}\n"
+            f"Min (ms): {session['min_ms']}\n"
+            f"Max (ms): {session['max_ms']}\n"
+            f"Avg (ms): {session['avg_ms']}"
+        )
+
+        return text

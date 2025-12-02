@@ -16,7 +16,7 @@ class Result:
         self.status_code = status_code
         self.ok = ok
 
-    def __str__(self):  # str formatting for debug purposes
+    def __str__(self):  # str formatting for debug purposes, probably unused
         if self.ok:
             return f"{self.url} attempt {self.attempt}: {self.elapsed_ms:.2f} ms (status {self.status_code})"
         else:

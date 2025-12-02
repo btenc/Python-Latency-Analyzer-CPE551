@@ -4,26 +4,38 @@ This program measures latency tests for a given URL and saves the results to a r
 
 The results file can be used to compare, review, and visualize tests that have been completed.
 
-Important: There is no CSV provided, you must run the preload cell or run some testing sessions first.
+Important: There is no CSV provided, you must run the preload / seeding cell or run some testing sessions first.
+
+The only file you need to use is `src/notebook/main.ipynb`, which is the connecter for all other modules and data files.
+
+There are also test cases in `src/tests` using Pytest.
 
 # HOW TO USE!
 
 Install dependencies: `pip install -r requirements.txt`
 
-Program entry point: `notebooks/main.ipynb`
+Program entry point: `src/notebook/main.ipynb`
 
 Program Instructions:
 
-1. If needed, run **CELL XXXX** to preload the results file with test sessions.
-2. Run **CELL XXXX** to be prompted and enter a URL to run and save a summary of the testing session into the results file. (The session is saved with session averages, not individual tests).
-3. Run other cells to view data from the results file in meaningful ways and comparisons.
-4. There are also cells for clearing the saved results, or removing all tests with a specific label, url, etc.
+1. Run the setup cell to import needed modules.
+2. If needed, run **the seeding cell** to preload the results file with test sessions.
+3. Run **test session cell** to be prompted and enter a URL to run and save a session of the testing session into the results file. (The session is saved with session averages, not individual tests).
+4. Run cells to view data from the results file in meaningful ways and comparisons.
+5. There are also helper cells for clearing the saved results, or removing all tests with a specific label, url, etc.
 
 # References Used
 
 https://docs.python.org/3/reference/import.html#package-relative-imports
+
 https://docs.python-requests.org/en/latest/index.html
+
 https://www.geeksforgeeks.org/python/what-is-__init__-py-file-in-python/
+https://stackoverflow.com/questions/52119454/how-to-obtain-jupyter-notebooks-path
+
+https://www.geeksforgeeks.org/python/what-is-__init__-py-file-in-python/
+
+https://docs.python.org/3/library/os.html
 
 Edit this later but TLDR for now:
 
