@@ -29,6 +29,12 @@ def append_session_row(row):
     """
     Append session row to results file and creates if missing.
     """
+
+    if row.get("successes", 0) == 0:
+        print("\nURL was unreachable: the site may be down or the URL was invalid.")
+        print("It has not been recorded in the results file.")
+        return  # do not write the row
+
     # check if file exists or not
     file_exists = os.path.exists(results_file)
 
@@ -41,6 +47,7 @@ def append_session_row(row):
 
         # else just simple row write
         writer.writerow(row)
+        print("\nSession summary properly appended to the results file")
 
 
 def read_latency_csv(csv_file_path=None):
