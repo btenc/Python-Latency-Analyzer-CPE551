@@ -19,6 +19,10 @@ from latency.result import Result
 
 
 class LatencyTester:
+    """
+    Latency testing suite and session management / row export
+    """
+
     def __init__(
         self, url="https://www.google.com", attempts=5, timeout=5, label="Default"
     ):

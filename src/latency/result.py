@@ -9,6 +9,10 @@ Last Edited: 12/01/25
 
 
 class Result:
+    """
+    Container like class to hold individual testing attemptes per session
+    """
+
     def __init__(self, url, attempt, elapsed_ms, status_code, ok):
         self.url = url
         self.attempt = attempt

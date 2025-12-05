@@ -42,6 +42,7 @@ def append_session_row(row):
         # else just simple row write
         writer.writerow(row)
 
+
 def read_latency_csv(csv_file_path=None):
     """
     Helper function for data analyzer class to read csv file and convert into pandas dataframe.
@@ -65,13 +66,36 @@ def read_latency_csv(csv_file_path=None):
         raise ValueError(f"CSV file could not be parsed: {csv_file_path}\n{e}")
 
     # ensure all columns match required ones
-    required_columns = ["url", "attempts", "successes", "failures", "min_ms", "max_ms", "avg_ms"]
+    required_columns = [
+        "url",
+        "attempts",
+        "successes",
+        "failures",
+        "min_ms",
+        "max_ms",
+        "avg_ms",
+    ]
     # if any required column is missing, raise error
     for col in required_columns:
         if col not in df.columns:
-            raise ValueError(f"Missing required column '{col}' in CSV file: {csv_file_path}")
+            raise ValueError(
+                f"Missing required column '{col}' in CSV file: {csv_file_path}"
+            )
 
     # clean up URL column by stripping whitespace
     df["url"] = df["url"].str.strip()
     # return the dataframe
     return df
+
+
+def delete_results_csv(csv_file_path=None):
+    """
+    Deletes the csv passed in or default results_file
+    """
+    csv_file_path = csv_file_path or results_file
+
+    try:
+        os.remove(csv_file_path)
+        print("Results file successfully cleared.")
+    except FileNotFoundError:
+        print("The file does not exist, so nothing to do.")

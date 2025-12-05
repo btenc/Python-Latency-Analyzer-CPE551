@@ -10,6 +10,8 @@ The only file you need to use is `src/notebook/main.ipynb`, which is the connect
 
 There are also test cases in `src/tests` using Pytest.
 
+All user input is sanitized and includes exception handling from a helper function in `src/utils/helpers.py`
+
 # HOW TO USE!
 
 Install dependencies: `pip install -r requirements.txt`
