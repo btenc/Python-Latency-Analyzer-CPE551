@@ -6,20 +6,36 @@ Description: Data analysis class,
 Author: Johnathan Vu
 Email: jvu2@stevens.edu
 Created: 12/01/25
-Last Edited: 12/02/25
+Last Edited: 12/07/25
 """
 
 import pandas as pd
 from utils.io_utils import read_latency_csv
 
 class DataAnalyzer:
-    def __init__(self, csv_file_path="../results/results.csv"):
+    def __init__(self, csv_file_path=None, data_analyzer=None, dataframe=None):
         """
-        Initializes DataAnalyzer with latency data from a csv file
+        Initializes DataAnalyzer either from:
+            - latency data from a csv file
+            - a dataframe
+            - DataAnalyzer instance
         """
+        if dataframe is not None:
+            self.data = dataframe
+            return
+
+        if data_analyzer is not None:
+            self.data = data_analyzer.data
+            return
+        
+        if csv_file_path is None:
+            csv_file_path = "../results/results.csv"
+        
         self.csv_file_path = csv_file_path
         # use helper function to read csv file and handle any errors
         self.data = read_latency_csv(csv_file_path)
+
+        
         
     def per_url_statistics(self):
         """
@@ -40,32 +56,38 @@ class DataAnalyzer:
             - Coefficient of Variation for latency: shows how consistent the latency is. Lower is better.
             - Performance score: score is based on avg latency and success rate. Higher is better.
         """
-        stats = self.data
+        try:
+            stats = self.data
+            if stats is None:
+                raise ValueError("self.data is empty.")
 
-        # Group data by URL and calculate stats
-        per_url = stats.groupby("url").agg(
-            attempts_total = ("attempts", "sum"),
-            successes_total = ("successes", "sum"),
-            failures_total = ("failures", "sum"),
-            # special function requirement: lambda to help calculate success/failure rates
-            success_rate = ("successes", lambda x: x.sum() / stats.loc[x.index, "attempts"].sum() * 100),
-            failure_rate = ("failures", lambda x: x.sum() / stats.loc[x.index, "attempts"].sum() * 100),
-            min_latency_ms = ("min_ms", "min"),
-            max_latency_ms = ("max_ms", "max"),
-            avg_latency_ms = ("avg_ms", "mean"),
-            stddev_latency_ms = ("avg_ms", "std")
-        )
+            # Group data by URL and calculate stats
+            per_url = stats.groupby("url").agg(
+                attempts_total = ("attempts", "sum"),
+                successes_total = ("successes", "sum"),
+                failures_total = ("failures", "sum"),
+                # special function requirement: lambda to help calculate success/failure rates
+                success_rate = ("successes", lambda x: x.sum() / stats.loc[x.index, "attempts"].sum() * 100),
+                failure_rate = ("failures", lambda x: x.sum() / stats.loc[x.index, "attempts"].sum() * 100),
+                min_latency_ms = ("min_ms", "min"),
+                max_latency_ms = ("max_ms", "max"),
+                avg_latency_ms = ("avg_ms", "mean"),
+                stddev_latency_ms = ("avg_ms", "std")
+            )
 
-        # Latency Range: max_latency_ms - min_latency_ms
-        per_url["latency_range_ms"] = per_url["max_latency_ms"] - per_url["min_latency_ms"]
-        # Maximum Deviation from Average Latency: max_latency_ms - avg_latency_ms
-        per_url["max_dev_from_avg"] = per_url["max_latency_ms"] - per_url["avg_latency_ms"]
-        # Coefficient of Variation for Latency: (stddev_latency_ms / avg_latency_ms) * 100
-        per_url["cv_latency"] = (per_url["stddev_latency_ms"] / per_url["avg_latency_ms"]) * 100
-        # Performance Score: (1000 / avg_latency_ms) * (successes_total / attempts_total)
-        per_url["performance_score"] = (1000 / per_url["avg_latency_ms"]) * (per_url["successes_total"] / per_url["attempts_total"])
+            # Latency Range: max_latency_ms - min_latency_ms
+            per_url["latency_range_ms"] = per_url["max_latency_ms"] - per_url["min_latency_ms"]
+            # Maximum Deviation from Average Latency: max_latency_ms - avg_latency_ms
+            per_url["max_dev_from_avg"] = per_url["max_latency_ms"] - per_url["avg_latency_ms"]
+            # Coefficient of Variation for Latency: (stddev_latency_ms / avg_latency_ms) * 100
+            per_url["cv_latency"] = (per_url["stddev_latency_ms"] / per_url["avg_latency_ms"]) * 100
+            # Performance Score: (1000 / avg_latency_ms) * (successes_total / attempts_total)
+            per_url["performance_score"] = (1000 / per_url["avg_latency_ms"]) * (per_url["successes_total"] / per_url["attempts_total"])
 
-        return per_url
+            return per_url
+        
+        except Exception as e:
+            raise RuntimeError(f"per_url_statistics() failed: {e}")
     
     def overall_statistics(self):
         """
@@ -80,17 +102,39 @@ class DataAnalyzer:
             - Minimum Latency (ms)
             - Maximum Latency (ms)
         """
-        return pd.Series({
-            "total_attempts": self.data["attempts"].sum(),
-            "total_successes": self.data["successes"].sum(),
-            "total_failures": self.data["failures"].sum(),
-            "overall_success_rate": self.data["successes"].sum() / self.data["attempts"].sum() * 100,
-            "overall_avg_latency_ms": self.data["avg_ms"].mean(),
-            "overall_stddev_latency_ms": self.data["avg_ms"].std(),
-            "min_latency_ms": self.data["min_ms"].min(),
-            "max_latency_ms": self.data["max_ms"].max()
-        })
-    
+        try:
+            return pd.Series({
+                "total_attempts": self.data["attempts"].sum(),
+                "total_successes": self.data["successes"].sum(),
+                "total_failures": self.data["failures"].sum(),
+                "overall_success_rate": self.data["successes"].sum() / self.data["attempts"].sum() * 100,
+                "overall_avg_latency_ms": self.data["avg_ms"].mean(),
+                "overall_stddev_latency_ms": self.data["avg_ms"].std(),
+                "min_latency_ms": self.data["min_ms"].min(),
+                "max_latency_ms": self.data["max_ms"].max()
+            })
+        
+        except Exception as e:
+            raise RuntimeError(f"overall_statistics() failed: {e}")
+        
+    def filter_by_value(self, column: str, value: str):
+        """
+        Return a filtered copy of the dataset where column == value.
+        """
+        try:
+            if column not in self.data.columns:
+                raise ValueError(f"Column '{column}' does not exist in the dataset.")
+
+            filtered = self.data[self.data[column] == value]
+
+            if filtered.empty:
+                raise ValueError(f"No rows found where {column} == '{value}'.")
+
+            return filtered.copy()
+        
+        except Exception as e:
+            raise RuntimeError(f"filter_by_value() failed: {e}")
+
     def __str__(self):
         """
         String representation to show per URL stats and overall stats from results data

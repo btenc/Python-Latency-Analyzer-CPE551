@@ -8,7 +8,7 @@ Description: Matplotlib helper for data analysis,
 Author: Johnathan Vu
 Email: jvu2@stevens.edu
 Created: 12/01/25
-Last Edited: 12/03/25
+Last Edited: 12/07/25
 """
 
 import matplotlib.pyplot as plt
@@ -40,17 +40,24 @@ class Plots:
             raise ValueError(f"Column '{column}' not found in per_url_stats")
 
         # sort Dataframe by average latency in descending order
-        df = df.sort_values(column, ascending=False)
+        df = df.sort_values(column, ascending=True)
+        values = df[column].values
+        urls = df.index
 
         # create the bar chart
-        plt.figure(figsize=(10, 6))
-        plt.bar(df.index, df[column], color=color)
-        plt.ylabel(ylabel)
-        plt.xlabel("URLs")
+        plt.figure(figsize=(12, max(4, len(df) * 0.5)))
+        plt.barh(urls, values, color=color)
+        plt.xlabel(ylabel)
         plt.title(title)
-        plt.xticks(rotation=45, ha="right")
+
+        for i, v in enumerate(values):
+            plt.text(v, i, f" {v:.2f}", va="center", fontsize=9)
+
+        plt.grid(axis='x', linestyle='--', alpha=0.5)
+        plt.gca().invert_yaxis()  # largest bar on top
         plt.tight_layout()
         plt.show()
+        
 
     def plot_performance_vs_latency(self):
         """
@@ -86,7 +93,12 @@ class Plots:
             X: Each URL
             Y: Success Rate
         """
-        self.plot_stat("success_rate", "Success Rate (%)", "Success Rate per URL")
+        self.plot_stat(
+            column="success_rate",
+            ylabel="Success Rate (%)",
+            title="Success Rate per URL",
+            color="#006400"
+        )
 
     def plot_avg_latency(self):
         """
@@ -94,7 +106,12 @@ class Plots:
             X: Each URL
             Y: Average latency
         """
-        self.plot_stat("avg_latency_ms", "Average Latency (ms)", "Average Latency per URL", "lightskyblue")
+        self.plot_stat(
+            column="avg_latency_ms",
+            ylabel="Average Latency (ms)",
+            title="Average Latency per URL",
+            color="#8B0000"
+        )
 
     def plot_latency_range(self):
         """
@@ -102,7 +119,12 @@ class Plots:
             X: Each URL
             Y: Latency Range
         """
-        self.plot_stat("latency_range_ms", "Latency Range (ms)", "Latency Range per URL")
+        self.plot_stat(
+            column="latency_range_ms",
+            ylabel="Latency Range (ms)",
+            title="Latency Range per URL",
+            color="#4B0082"
+        )
 
     def plot_cv_latency(self):
         """
@@ -110,7 +132,12 @@ class Plots:
             X: Each URL
             Y: Coefficient of Variation
         """
-        self.plot_stat("cv_latency", "Coefficient of Variation (%)", "Latency Consistency per URL")
+        self.plot_stat(
+            column="cv_latency",
+            ylabel="Coefficient of Variation (%)",
+            title="Latency Consistency per URL",
+            color="#00008B"
+        )
 
     def plot_performance_score(self):
         """
@@ -118,4 +145,9 @@ class Plots:
             X: Each URL
             Y: Performance score
         """
-        self.plot_stat("performance_score", "Performance Score", "Performance Score per URL", "wheat")
+        self.plot_stat(
+            column="performance_score",
+            ylabel="Performance Score",
+            title="Performance Score per URL",
+            color="#FF8C00"
+        )
