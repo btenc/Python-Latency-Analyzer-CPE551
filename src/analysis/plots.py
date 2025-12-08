@@ -8,9 +8,9 @@ Description: Matplotlib helper for data analysis,
 Author: Johnathan Vu
 Email: jvu2@stevens.edu
 Created: 12/01/25
-Last Edited: 12/07/25
+Last Edited: 12/08/25
 """
-
+import pandas as pd
 import matplotlib.pyplot as plt
 from .data_analyzer import DataAnalyzer
 
@@ -50,11 +50,12 @@ class Plots:
         plt.xlabel(ylabel)
         plt.title(title)
 
+        # add the numeric value at the end of each bar
         for i, v in enumerate(values):
             plt.text(v, i, f" {v:.2f}", va="center", fontsize=9)
 
         plt.grid(axis='x', linestyle='--', alpha=0.5)
-        plt.gca().invert_yaxis()  # largest bar on top
+        plt.gca().invert_yaxis()
         plt.tight_layout()
         plt.show()
         
@@ -86,12 +87,48 @@ class Plots:
 
         plt.tight_layout()
         plt.show()
+
+    def plot_domain_vs_others(self, domain: str, metric: str):
+        """
+        Compare one domain's metric to the rest of the dataset.
+            domain: the domain/url string to compare
+            metric: which numeric metric to analyze (e.g., 'cv_latency', 'avg_latency_ms')
+        """
+        df = self.per_url_stats.copy()
+
+        # check metric exists
+        if metric not in df.columns:
+            raise ValueError(f"Metric '{metric}' not found in dataset.")
+
+        # Filter for the target domain
+        target = df.loc[[domain]] if domain in df.index else pd.DataFrame()
+        if target.empty:
+            raise ValueError(f"No data found for domain '{domain}'")
+
+        # Compute averages
+        target_avg = target[metric].mean()
+        others_avg = df.loc[df.index != domain, metric].mean()
+
+        # Prepare bar chart data
+        labels = [domain, "All Other Domains"]
+        values = [target_avg, others_avg]
+
+        # Plot
+        plt.figure(figsize=(8, 5))
+        plt.bar(labels, values, color=["#2c7bb6", "#d7191c"])
+        plt.ylabel(metric.replace("_", " ").title())
+        plt.title(f"{metric.replace('_', ' ').title()} Comparison")
+        
+        # Add numeric labels on top of bars
+        for i, v in enumerate(values):
+            plt.text(i, v, f"{v:.2f}", ha="center", va="bottom")
+
+        plt.tight_layout()
+        plt.show()
     
     def plot_success_rate(self):
         """
         Bar chart of success rate per URL
-            X: Each URL
-            Y: Success Rate
         """
         self.plot_stat(
             column="success_rate",
@@ -103,8 +140,6 @@ class Plots:
     def plot_avg_latency(self):
         """
         Bar chart of average latency per URL
-            X: Each URL
-            Y: Average latency
         """
         self.plot_stat(
             column="avg_latency_ms",
@@ -116,8 +151,6 @@ class Plots:
     def plot_latency_range(self):
         """
         Bar chart of latency range per URL
-            X: Each URL
-            Y: Latency Range
         """
         self.plot_stat(
             column="latency_range_ms",
@@ -129,8 +162,6 @@ class Plots:
     def plot_cv_latency(self):
         """
         Bar chart of latency consistency per URL
-            X: Each URL
-            Y: Coefficient of Variation
         """
         self.plot_stat(
             column="cv_latency",
@@ -142,8 +173,6 @@ class Plots:
     def plot_performance_score(self):
         """
         Bar chart of performance score per URL
-            X: Each URL
-            Y: Performance score
         """
         self.plot_stat(
             column="performance_score",

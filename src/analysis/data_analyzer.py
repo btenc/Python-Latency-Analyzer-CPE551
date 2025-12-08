@@ -6,7 +6,7 @@ Description: Data analysis class,
 Author: Johnathan Vu
 Email: jvu2@stevens.edu
 Created: 12/01/25
-Last Edited: 12/07/25
+Last Edited: 12/08/25
 """
 
 import pandas as pd
@@ -81,6 +81,7 @@ class DataAnalyzer:
             per_url["max_dev_from_avg"] = per_url["max_latency_ms"] - per_url["avg_latency_ms"]
             # Coefficient of Variation for Latency: (stddev_latency_ms / avg_latency_ms) * 100
             per_url["cv_latency"] = (per_url["stddev_latency_ms"] / per_url["avg_latency_ms"]) * 100
+            per_url["cv_latency"] = per_url["cv_latency"].fillna(0).replace([float("inf"), -float("inf")], 0)
             # Performance Score: (1000 / avg_latency_ms) * (successes_total / attempts_total)
             per_url["performance_score"] = (1000 / per_url["avg_latency_ms"]) * (per_url["successes_total"] / per_url["attempts_total"])
 
@@ -121,19 +122,23 @@ class DataAnalyzer:
         """
         Return a filtered copy of the dataset where column == value.
         """
-        try:
-            if column not in self.data.columns:
-                raise ValueError(f"Column '{column}' does not exist in the dataset.")
+        # Clean the value
+        value = str(value).strip()
 
-            filtered = self.data[self.data[column] == value]
+        # Column doesn't exist
+        if column not in self.data.columns:
+            print(f"\nColumn '{column}' does not exist in the dataset.")
+            return None
 
-            if filtered.empty:
-                raise ValueError(f"No rows found where {column} == '{value}'.")
+        # Filter the data
+        filtered = self.data[self.data[column] == value]
 
-            return filtered.copy()
-        
-        except Exception as e:
-            raise RuntimeError(f"filter_by_value() failed: {e}")
+        # No match
+        if filtered.empty:
+            print(f"\nNo rows found where {column} == '{value}'.")
+            return None
+
+        return filtered.copy()
 
     def __str__(self):
         """
