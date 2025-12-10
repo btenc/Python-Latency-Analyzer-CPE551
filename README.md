@@ -62,6 +62,12 @@ Program Instructions:
 - `src/utils` input cleaning and validation, `results/results.csv` CSV R/W logic.
 - `src/latency` implementation into `notebook/main.ipynb`
 
+### Johnathan
+
+- `src/analysis` modules
+- `src/analysis` implementation into `notebook/main.ipynb`
+- `src/utils` read_latency_csv helper function
+
 ## References Used
 
 https://docs.python.org/3/reference/import.html#package-relative-imports
