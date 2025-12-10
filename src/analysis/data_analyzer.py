@@ -116,6 +116,7 @@ class DataAnalyzer:
             })
         
         except Exception as e:
+            # Catches any underlying errors (missing columns, empty DF, bad values, divide-by-zero)
             raise RuntimeError(f"overall_statistics() failed: {e}")
         
     def filter_by_value(self, column: str, value: str):
